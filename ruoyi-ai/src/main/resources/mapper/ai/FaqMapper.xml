@@ -13,7 +13,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="created"    column="created"    />
     </resultMap>
 
-    <sql id="scene_user_id">ruoyi</sql>
+    <sql id="scene_user_id">"ruoyi"</sql>
 
     <sql id="selectFaqVo">
         select id, session_id, scene_user_id, question, answer, created from faq
@@ -23,7 +23,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectFaqVo"/>
         <where>  
             <if test="sessionId != null "> and session_id = #{sessionId}</if>
-            <if test="sceneUserId != null  and sceneUserId != ''"> and scene_user_id = #{scene_user_id}</if>
+            and scene_user_id = <include refid="scene_user_id"/>
             <if test="question != null  and question != ''"> and question like concat('%', #{question}, '%')</if>
             <if test="answer != null  and answer != ''"> and answer like concat('%', #{answer}, '%')</if>
         </where>
@@ -36,7 +36,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
     <select id="selectFaqByQuestion" parameterType="String" resultMap="FaqResult">
         <include refid="selectFaqVo"/>
-        where question = #{question} and scene_user_id = #{scene_user_id}
+        where question = #{question} and scene_user_id = <include refid="scene_user_id"/>
     </select>
         
     <insert id="insertFaq" parameterType="Faq" useGeneratedKeys="true" keyProperty="id">
@@ -50,7 +50,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
          </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="sessionId != null">#{sessionId},</if>
-            <if test="sceneUserId != null">#{scene_user_id},</if>
+            <if test="sceneUserId != null"><include refid="scene_user_id"/>,</if>
             <if test="question != null">#{question},</if>
             <if test="answer != null">#{answer},</if>
             <if test="created != null">#{created},</if>
@@ -61,7 +61,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         update faq
         <trim prefix="SET" suffixOverrides=",">
             <if test="sessionId != null">session_id = #{sessionId},</if>
-            <if test="sceneUserId != null">scene_user_id = #{scene_user_id},</if>
+            <if test="sceneUserId != null">scene_user_id = <include refid="scene_user_id"/>,</if>
             <if test="question != null">question = #{question},</if>
             <if test="answer != null">answer = #{answer},</if>
             <if test="created != null">created = #{created},</if>

@@ -27,14 +27,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 /**
  * FAQ管理Controller
- * 
+ *
  * @author ruoyi
  * @date 2024-04-10
  */
 @RestController
 @RequestMapping("/ai/faq")
-public class FaqController extends BaseController
-{
+public class FaqController extends BaseController {
     @Autowired
     private IFaqService faqService;
 
@@ -43,8 +42,7 @@ public class FaqController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('ai:faq:list')")
     @GetMapping("/list")
-    public TableDataInfo list(Faq faq)
-    {
+    public TableDataInfo list(Faq faq) {
         startPage();
         List<Faq> list = faqService.selectFaqList(faq);
         return getDataTable(list);
@@ -56,8 +54,7 @@ public class FaqController extends BaseController
     @PreAuthorize("@ss.hasPermi('ai:faq:export')")
     @Log(title = "FAQ管理", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(HttpServletResponse response, Faq faq)
-    {
+    public void export(HttpServletResponse response, Faq faq) {
         List<Faq> list = faqService.selectFaqList(faq);
         ExcelUtil<Faq> util = new ExcelUtil<Faq>(Faq.class);
         util.exportExcel(response, list, "FAQ管理数据");
@@ -68,8 +65,7 @@ public class FaqController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('ai:faq:query')")
     @GetMapping(value = "/{id}")
-    public AjaxResult getInfo(@PathVariable("id") Long id)
-    {
+    public AjaxResult getInfo(@PathVariable("id") Long id) {
         return success(faqService.selectFaqById(id));
     }
 
@@ -79,8 +75,7 @@ public class FaqController extends BaseController
     @PreAuthorize("@ss.hasPermi('ai:faq:add')")
     @Log(title = "FAQ管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public AjaxResult add(@RequestBody Faq faq)
-    {
+    public AjaxResult add(@RequestBody Faq faq) {
         faq.setCreated(new Date());
         return toAjax(faqService.insertFaq(faq));
     }
@@ -91,9 +86,8 @@ public class FaqController extends BaseController
     @PreAuthorize("@ss.hasPermi('ai:faq:add_list')")
     @Log(title = "FAQ管理", businessType = BusinessType.INSERT)
     @PostMapping("/add_list")
-    public AjaxResult add_list(@RequestBody List<Faq> faqs)
-    {
-        for(Faq faq: faqs){
+    public AjaxResult add_list(@RequestBody List<Faq> faqs) {
+        for (Faq faq : faqs) {
             faq.setCreated(new Date());
             faqService.insertFaq(faq);
         }
@@ -106,8 +100,7 @@ public class FaqController extends BaseController
     @PreAuthorize("@ss.hasPermi('ai:faq:edit')")
     @Log(title = "FAQ管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public AjaxResult edit(@RequestBody Faq faq)
-    {
+    public AjaxResult edit(@RequestBody Faq faq) {
         return toAjax(faqService.updateFaq(faq));
     }
 
@@ -116,9 +109,8 @@ public class FaqController extends BaseController
      */
     @PreAuthorize("@ss.hasPermi('ai:faq:remove')")
     @Log(title = "FAQ管理", businessType = BusinessType.DELETE)
-	@DeleteMapping("/{ids}")
-    public AjaxResult remove(@PathVariable Long[] ids)
-    {
+    @DeleteMapping("/{ids}")
+    public AjaxResult remove(@PathVariable Long[] ids) {
         return toAjax(faqService.deleteFaqByIds(ids));
     }
 
@@ -128,8 +120,7 @@ public class FaqController extends BaseController
     @PreAuthorize("@ss.hasPermi('ai:faq:remove')")
     @Log(title = "FAQ管理", businessType = BusinessType.IMPORT)
     @PostMapping("/importData")
-    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception
-    {
+    public AjaxResult importData(MultipartFile file, boolean updateSupport) throws Exception {
         ExcelUtil<Faq> util = new ExcelUtil<Faq>(Faq.class);
         List<Faq> faqList = util.importExcel(file.getInputStream());
         String message = faqService.importFaq(faqList, updateSupport);
@@ -137,8 +128,7 @@ public class FaqController extends BaseController
     }
 
     @PostMapping("/importTemplate")
-    public AjaxResult importTemplate()
-    {
+    public AjaxResult importTemplate() {
         ExcelUtil<Faq> util = new ExcelUtil<Faq>(Faq.class);
         return util.importTemplateExcel("FAQ数据");
     }
