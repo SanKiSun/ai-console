@@ -86,6 +86,21 @@ public class FaqController extends BaseController
     }
 
     /**
+     * 批量新增FAQ管理
+     */
+    @PreAuthorize("@ss.hasPermi('ai:faq:add_list')")
+    @Log(title = "FAQ管理", businessType = BusinessType.INSERT)
+    @PostMapping("/add_list")
+    public AjaxResult add_list(@RequestBody List<Faq> faqs)
+    {
+        for(Faq faq: faqs){
+            faq.setCreated(new Date());
+            faqService.insertFaq(faq);
+        }
+        return toAjax(faqs.size());
+    }
+
+    /**
      * 修改FAQ管理
      */
     @PreAuthorize("@ss.hasPermi('ai:faq:edit')")
