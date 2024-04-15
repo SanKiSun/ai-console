@@ -82,8 +82,6 @@
     <el-table v-loading="loading" :data="faqList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="ID" align="center" prop="id" />
-      <el-table-column label="会话ID" align="center" prop="sessionId" />
-      <el-table-column label="场景用户ID" align="center" prop="sceneUserId" />
       <el-table-column label="问题" align="center" prop="question" />
       <el-table-column label="答案" align="center" prop="answer" />
       <el-table-column label="创建时间" align="center" prop="created" />
