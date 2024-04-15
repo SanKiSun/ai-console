@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.ai.mapper.FileMapper">
+    
+    <resultMap type="File" id="FileResult">
+        <result property="sessionId"    column="session_id"    />
+        <result property="sceneUserId"    column="scene_user_id"    />
+        <result property="filename"    column="filename"    />
+        <result property="contentType"    column="content_type"    />
+        <result property="size"    column="size"    />
+        <result property="id"    column="id"    />
+        <result property="created"    column="created"    />
+    </resultMap>
+
+    <sql id="selectFileVo">
+        select session_id, scene_user_id, filename, content_type, size, id, created from file
+    </sql>
+
+    <select id="selectFileList" parameterType="File" resultMap="FileResult">
+        <include refid="selectFileVo"/>
+        <where>  
+            <if test="sessionId != null "> and session_id = #{sessionId}</if>
+            <if test="sceneUserId != null  and sceneUserId != ''"> and scene_user_id = #{sceneUserId}</if>
+            <if test="filename != null  and filename != ''"> and filename like concat('%', #{filename}, '%')</if>
+            <if test="contentType != null  and contentType != ''"> and content_type = #{contentType}</if>
+            <if test="size != null "> and size = #{size}</if>
+            <if test="created != null "> and created = #{created}</if>
+        </where>
+    </select>
+    
+    <select id="selectFileById" parameterType="Long" resultMap="FileResult">
+        <include refid="selectFileVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertFile" parameterType="File" useGeneratedKeys="true" keyProperty="id">
+        insert into file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">session_id,</if>
+            <if test="sceneUserId != null">scene_user_id,</if>
+            <if test="filename != null">filename,</if>
+            <if test="contentType != null">content_type,</if>
+            <if test="size != null">size,</if>
+            <if test="created != null">created,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sessionId != null">#{sessionId},</if>
+            <if test="sceneUserId != null">#{sceneUserId},</if>
+            <if test="filename != null">#{filename},</if>
+            <if test="contentType != null">#{contentType},</if>
+            <if test="size != null">#{size},</if>
+            <if test="created != null">#{created},</if>
+         </trim>
+    </insert>
+
+    <update id="updateFile" parameterType="File">
+        update file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="sessionId != null">session_id = #{sessionId},</if>
+            <if test="sceneUserId != null">scene_user_id = #{sceneUserId},</if>
+            <if test="filename != null">filename = #{filename},</if>
+            <if test="contentType != null">content_type = #{contentType},</if>
+            <if test="size != null">size = #{size},</if>
+            <if test="created != null">created = #{created},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteFileById" parameterType="Long">
+        delete from file where id = #{id}
+    </delete>
+
+    <delete id="deleteFileByIds" parameterType="String">
+        delete from file where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>
